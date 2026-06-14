@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📡 SMS Receiver · sms-activate.org</title>
+    <title>📡 SMS Receiver · sms-activate</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -196,7 +196,7 @@
             background: #0f0f1a;
             border-radius: 6px;
             padding: 8px 12px;
-            max-height: 120px;
+            max-height: 200px;
             overflow-y: auto;
             font-family: 'Courier New', monospace;
             font-size: 0.65rem;
@@ -228,6 +228,32 @@
         .stat-item .num { font-size: 1.1rem; font-weight: 700; color: #00d4ff; display: block; }
         .stat-item .lbl { font-size: 0.6rem; color: #666; text-transform: uppercase; }
         
+        .method-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        .method-selector .method-btn {
+            flex: 1;
+            padding: 6px 12px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            background: #0f0f1a;
+            color: #888;
+            cursor: pointer;
+            font-size: 0.7rem;
+            text-align: center;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        .method-selector .method-btn.active {
+            border-color: #00d4ff;
+            color: #00d4ff;
+            background: #0a1a2e;
+        }
+        .method-selector .method-btn:hover { border-color: #555; }
+        
         @media (max-width: 500px) {
             .container { padding: 10px; }
             .card { padding: 12px; }
@@ -239,13 +265,6 @@
         ::-webkit-scrollbar-track { background: #0f0f1a; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
-        
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-        .pulse { animation: pulse 1.5s infinite; }
     </style>
 </head>
 <body>
@@ -262,6 +281,13 @@
         <div class="card">
             <div class="card-title">⚙️ لوحة التحكم</div>
             
+            <!-- طريقة الاتصال -->
+            <div class="method-selector">
+                <div class="method-btn active" id="methodDirect" onclick="setMethod('direct')">🌐 مباشر (CORS Proxy)</div>
+                <div class="method-btn" id="methodJsonp" onclick="setMethod('jsonp')">🔄 JSONP</div>
+                <div class="method-btn" id="methodIframe" onclick="setMethod('iframe')">📦 Iframe</div>
+            </div>
+            
             <div class="flex-row" style="margin-bottom:12px;">
                 <button class="btn btn-primary" id="btnGetBalance" onclick="getBalance()">💰 الرصيد</button>
                 <button class="btn btn-outline" onclick="getNumbers()">📊 الأرقام المتاحة</button>
@@ -269,7 +295,7 @@
             </div>
             
             <div class="status-box" id="statusBox">
-                💡 جاهز. اضغط "💰 الرصيد" للتحقق من المفتاح.
+                💡 جاهز. حاول الاتصال بالرصيد...
             </div>
             
             <div class="flex-between" style="margin-bottom:12px;">
@@ -284,14 +310,13 @@
                         <option value="49">🇩🇪 Germany (+49)</option>
                         <option value="7">🇷🇺 Russia (+7)</option>
                         <option value="380">🇺🇦 Ukraine (+380)</option>
-                        <option value="20">🇪🇬 Egypt (+20)</option>
-                        <option value="212" selected>🇲🇦 Morocco (+212)</option>
+                        <option value="20" selected>🇪🇬 Egypt (+20)</option>
+                        <option value="212">🇲🇦 Morocco (+212)</option>
                         <option value="213">🇩🇿 Algeria (+213)</option>
                         <option value="216">🇹🇳 Tunisia (+216)</option>
                         <option value="966">🇸🇦 Saudi Arabia (+966)</option>
                         <option value="971">🇦🇪 UAE (+971)</option>
                         <option value="91">🇮🇳 India (+91)</option>
-                        <option value="86">🇨🇳 China (+86)</option>
                     </select>
                 </div>
                 <div class="form-group" style="flex:1;margin-bottom:0;">
@@ -316,6 +341,11 @@
                 <button class="btn btn-success" id="btnGetNumber" onclick="getNumber()">📱 الحصول على رقم</button>
                 <button class="btn btn-primary" id="btnCheckSMS" onclick="checkSMS()" disabled>📩 التحقق من الرسائل</button>
                 <button class="btn btn-danger" onclick="cancelActivation()">⏹️ إلغاء التفعيل</button>
+            </div>
+            
+            <div class="form-group" style="margin-top:12px;margin-bottom:0;">
+                <label>🔗 CORS Proxy URL (إذا اخترت "مباشر")</label>
+                <input type="text" id="proxyUrl" value="https://corsproxy.io/?" placeholder="https://corsproxy.io/?">
             </div>
         </div>
         
@@ -365,12 +395,12 @@
             </div>
         </div>
         
-        <div class="footer">sms-activate.org Bridge v2.0 · بإذن للاختبارات الأخلاقية فقط</div>
+        <div class="footer">sms-activate.org Bridge v2.1 · CORS Fix · للاختبارات الأخلاقية فقط</div>
     </div>
 
     <script>
         // ====================================================================
-        // 🔑 API KEY — مفتاحك جاهز هنا
+        // 🔑 API KEY — مفتاحك جاهز
         // ====================================================================
         var API_KEY = '4850e36b08A639f11f0dd3A87b36f82b';
         
@@ -383,7 +413,7 @@
             smsList: [],
             autoRefreshInterval: null,
             isChecking: false,
-            lastCheckTime: 0
+            method: 'direct'  // direct, jsonp, iframe
         };
 
         // ====================================================================
@@ -423,24 +453,92 @@
         }
 
         // ====================================================================
-        // API CALL
+        // METHOD SELECTOR
+        // ====================================================================
+        function setMethod(method) {
+            state.method = method;
+            ['direct', 'jsonp', 'iframe'].forEach(function(m) {
+                var el = $('method' + m.charAt(0).toUpperCase() + m.slice(1));
+                if (el) {
+                    el.classList.toggle('active', m === method);
+                }
+            });
+            log('🔄 طريقة الاتصال: ' + method, '');
+            setStatus('✅ تم تغيير طريقة الاتصال إلى: ' + method, 'info');
+        }
+
+        // ====================================================================
+        // API CALL — مع CORS Proxy
         // ====================================================================
         function apiCall(action, params) {
-            var url = 'https://api.sms-activate.ae/stubs/handler_api.php?api_key=' + encodeURIComponent(API_KEY) + '&action=' + encodeURIComponent(action);
+            var baseUrl = 'https://api.sms-activate.ae/stubs/handler_api.php?api_key=' + encodeURIComponent(API_KEY) + '&action=' + encodeURIComponent(action);
             if (params) {
                 for (var k in params) {
-                    url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+                    baseUrl += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
                 }
             }
             
             log('➡️ ' + action + '...', '');
             
-            return fetch(url)
-                .then(function(r) { return r.text(); })
-                .then(function(text) {
-                    log('⬅️ ' + text.substring(0, 150), '');
-                    return text;
+            if (state.method === 'direct') {
+                // استعمال CORS Proxy
+                var proxyUrl = $('proxyUrl').value.trim() || 'https://corsproxy.io/?';
+                var fullUrl = proxyUrl + encodeURIComponent(baseUrl);
+                
+                return fetch(fullUrl)
+                    .then(function(r) { 
+                        if (!r.ok) throw new Error('HTTP ' + r.status);
+                        return r.text(); 
+                    })
+                    .then(function(text) {
+                        log('⬅️ ' + text.substring(0, 150), '');
+                        return text;
+                    });
+            }
+            else if (state.method === 'jsonp') {
+                // JSONP fallback
+                return new Promise(function(resolve, reject) {
+                    var callbackName = 'jsonp_cb_' + Date.now();
+                    window[callbackName] = function(data) {
+                        delete window[callbackName];
+                        document.body.removeChild(script);
+                        resolve(data);
+                    };
+                    
+                    var separator = baseUrl.includes('?') ? '&' : '?';
+                    var url = baseUrl + separator + 'callback=' + callbackName;
+                    
+                    var script = document.createElement('script');
+                    script.src = url;
+                    script.onerror = function() {
+                        delete window[callbackName];
+                        document.body.removeChild(script);
+                        reject(new Error('JSONP error'));
+                    };
+                    document.body.appendChild(script);
+                    
+                    setTimeout(function() {
+                        delete window[callbackName];
+                        document.body.removeChild(script);
+                        reject(new Error('JSONP timeout'));
+                    }, 15000);
                 });
+            }
+            else {
+                // Iframe method — we use the same as direct with proxy
+                var proxyUrl = $('proxyUrl').value.trim() || 'https://corsproxy.io/?';
+                var fullUrl = proxyUrl + encodeURIComponent(baseUrl);
+                
+                return fetch(fullUrl)
+                    .then(function(r) { 
+                        if (!r.ok) throw new Error('HTTP ' + r.status);
+                        return r.text(); 
+                    })
+                    .then(function(text) {
+                        log('⬅️ ' + text.substring(0, 150), '');
+                        return text;
+                    });
+            }
         }
 
         // ====================================================================
@@ -460,15 +558,15 @@
                     } else if (resp === 'BAD_KEY') {
                         setStatus('❌ مفتاح API خاطئ. تحقق من المفتاح', 'error');
                         log('❌ BAD_KEY', 'error');
-                    } else if (resp === 'NO_BALANCE') {
-                        setStatus('⚠️ الرصيد 0. اشحن الحساب', 'warn');
                     } else {
-                        setStatus('⚠️ ' + resp, 'warn');
+                        setStatus('⚠️ الرد: ' + (resp.substring(0, 100) || 'فارغ'), 'warn');
+                        log('⚠️ رد غير متوقع: ' + resp, 'error');
                     }
                 })
                 .catch(function(err) {
                     $('btnGetBalance').disabled = false;
-                    setStatus('❌ خطأ في الاتصال: ' + err.message, 'error');
+                    setStatus('❌ خطأ في الاتصال: ' + err.message + '. جرب تغيير طريقة الاتصال', 'error');
+                    log('❌ ' + err.message, 'error');
                 });
         }
 
@@ -498,7 +596,7 @@
                         setStatus(msg, 'info');
                         log('✅ تم استعلام الأرقام: ' + total + ' متاح', 'success');
                     } catch(e) {
-                        setStatus('⚠️ ' + resp.substring(0, 100), 'warn');
+                        setStatus('⚠️ ' + resp.substring(0, 120), 'warn');
                     }
                 })
                 .catch(function(err) {
@@ -545,7 +643,6 @@
             var country = $('countrySelect').value;
             var service = $('serviceSelect').value;
             
-            // Cancel previous activation first
             if (state.activationId) {
                 setStatus('⏳ إلغاء التفعيل السابق...', 'info');
                 apiCall('setStatus', { status: 8, id: state.activationId })
@@ -600,7 +697,7 @@
                 })
                 .catch(function(err) {
                     btnGetNumber.disabled = false;
-                    setStatus('❌ خطأ في الاتصال: ' + err.message, 'error');
+                    setStatus('❌ خطأ في الاتصال: ' + err.message + '. جرب تغيير طريقة الاتصال أعلاه', 'error');
                 });
         }
 
@@ -622,7 +719,6 @@
                 .then(function(resp) {
                     state.isChecking = false;
                     btnCheckSMS.disabled = false;
-                    state.lastCheckTime = Date.now();
                     
                     if (resp.startsWith('STATUS_OK:')) {
                         var parts = resp.split(':');
@@ -807,16 +903,7 @@
         // Auto-check balance on load
         setTimeout(function() {
             getBalance();
-        }, 500);
-        
-        // Keyboard shortcut: Enter checks SMS
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.ctrlKey && !e.shiftKey) {
-                if (state.activationId && !state.isChecking) {
-                    checkSMS();
-                }
-            }
-        });
+        }, 1000);
     </script>
 </body>
 </html>
